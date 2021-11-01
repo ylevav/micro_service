@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+}
+
+group 'com.proteantecs'
+version '1.0-SNAPSHOT'
+
+repositories {
+    maven {
+        url project.nexus_pull_url
+        credentials {
+            username "$repoUser"
+            password "$repoPassword"
+        }
+        allowInsecureProtocol true
+    }
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.proteantecs:parent_bom:1.0"
+    }
+}
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    apply from: "$rootDir/pt_dependencies.gradle"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+publishing {
+    repositories {
+        maven {
+            url project.nexus_publish_url
+            credentials {
+                username "$repoUser"
+                password "$repoPassword"
+            }
+            allowInsecureProtocol true
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'micro_service'
+            artifact("build/libs/micro_service-$version"+".jar") {
+                extension 'jar'
+            }}}}

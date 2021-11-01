@@ -1,0 +1,12 @@
+rootProject.name = 'micro_service'
+
+Properties props = new Properties()
+def propertiesFile = file('local.properties')
+if (propertiesFile.exists()) {
+    props.load(propertiesFile.newDataInputStream())
+}
+if (props.containsKey('use.local.common') && java.lang.Boolean.valueOf(props.getProperty('use.local.common'))){
+    include(':common')
+    project(':common').projectDir = new File(settingsDir, '../common')
+}
+
